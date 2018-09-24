@@ -1,23 +1,46 @@
 import React, { Component } from 'react';
+import Reviews from '../reviews/Reviews'
 
-class Review extends Component {
-  handleOnClick() {
-    this.props.store.dispatch({
-      type: 'DELETE_REVIEW',
-      id: this.props.review.id
+class ReviewInput extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      text: '',
+    };
+  }
+
+  handleOnChange(event) {
+    this.setState({
+      text: event.target.value,
     });
   }
 
+  handleOnSubmit(event) {
+    event.preventDefault();
+    this.props.store.dispatch({
+      type: 'ADD_REVIEW',
+      review: {
+        restaurantId: this.props.restaurantId,
+        text: this.state.text,
+      },
+    });
+    this.setState({
+      text: '',
+    });
+  }
   render() {
     return (
       <div>
-        <li>{this.props.review.text}</li>
-        <button onClick={() => this.handleOnClick()} >
-          Delete
-        </button>
+        <form onSubmit={(event) => this.handleOnSubmit(event)}>
+          <input type="text" onChange={(event) => this.handleOnChange(event)} />
+          <input type="submit" />
+        </form>
+        <Reviews store={this.props.store}
+                restaurantId={this.props.restaurantId}/>
       </div>
     );
   }
 };
 
-export default Review;
+export default ReviewInput;
